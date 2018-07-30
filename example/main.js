@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import XHighlight from '../src/index'
 // import XHighlight from '../dist/XHighlight'
+// import '../dist/css/XHighlight.css'
 
 Vue.use(XHighlight)
 

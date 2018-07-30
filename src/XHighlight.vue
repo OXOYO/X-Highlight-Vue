@@ -207,7 +207,6 @@
 
 <script>
 import hljs from 'highlight.js'
-// import hljs from 'highlight.js/lib/highlight'
 import Icon from './icon/index.vue'
 
 export default {
@@ -332,6 +331,9 @@ export default {
       lineCodeArr.forEach(snippet => {
         hljs.highlightBlock(snippet)
       })
+      _t.$nextTick(function () {
+        _t.loadStyles()
+      })
     },
     handleAction: function (action) {
       let _t = this
@@ -408,7 +410,6 @@ export default {
   mounted: function () {
     let _t = this
     // _t.loadLang()
-    _t.loadStyles()
     _t.render()
   }
   /*
