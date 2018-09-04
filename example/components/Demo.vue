@@ -8,16 +8,20 @@
    width: 100%;
    text-align: center;
 
-   .x-highlight {
+   .demo-header {
      width: 80%;
-     margin: 0 auto;
+     margin: 10px auto;
+   }
+   .demo-body {
+     width: 80%;
+     margin: 10px auto;
    }
  }
 </style>
 
 <template>
   <div class="demo">
-    <template v-for="item in demoList">
+    <div class="demo-body" v-for="(item, index) in demoList" :key="index">
       <XHighlight
         class="x-highlight"
         :title="item.title"
@@ -29,7 +33,7 @@
         :data="item.data"
       >
       </XHighlight>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -41,24 +45,24 @@
       return {
         demoList: [
           {
-            title: '',
+            title: 'Demo 001',
             lang: 'JSON',
             show: ['title', 'lang', 'num'],
-            tool: ['select-all', 'copy'],
+            tool: ['full-screen', 'select-all', 'copy'],
             maxHeight: 300,
             locale: 'zh',
             data: {
-              title: '',
+              title: 'Demo 001',
               lang: 'JSON',
               show: ['title', 'lang', 'num'],
-              tool: ['select-all', 'copy'],
+              tool: ['full-screen', 'select-all', 'copy'],
               maxHeight: 300,
               locale: 'zh',
               data: {}
             }
           },
           {
-            title: '',
+            title: 'Demo 002',
             lang: 'html',
             show: ['title', 'lang'],
             tool: ['select-all', 'copy'],

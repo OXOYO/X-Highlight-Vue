@@ -30,17 +30,19 @@
       <img src="./assets/logo.png">
       <h2>X-Highlight-Vue</h2>
     </div>
-    <!-- 拖拽窗口 -->
-    <Demo></Demo>
+    <DynamicDemo></DynamicDemo>
+    <!--<Demo></Demo>-->
   </div>
 </template>
 
 <script>
+import DynamicDemo from './components/DynamicDemo'
 import Demo from './components/Demo'
 
 export default {
   name: 'App',
   components: {
+    DynamicDemo,
     Demo
   }
 }
