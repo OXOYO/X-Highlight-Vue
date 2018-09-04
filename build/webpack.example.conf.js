@@ -119,7 +119,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.buildExmaple.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new webpack.ContextReplacementPlugin(
+      /highlight\.js\/styles/,
+      new RegExp(`^./(${['zenburn'].join('|')})$`)
+    )
   ]
 })
 
