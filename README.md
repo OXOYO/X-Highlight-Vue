@@ -11,7 +11,7 @@
 
 ## Example
 
-
+[Demo](https://oxoyo.github.io/X-Highlight-Vue/)
 
 ``` bash
 # git clone https://github.com/OXOYO/X-Highlight-Vue.git
