@@ -155,14 +155,14 @@
               background: #0D6AD9;
             }
           }
+          &.nodata {
+            color: #f90;
+            text-align: center;
+          }
         }
 
         &::selection {
           background: #0D6AD9;
-        }
-        &.nodata {
-          color: #f90;
-          text-align: center;
         }
       }
     }
@@ -251,7 +251,7 @@ export default {
     }
   },
   props: {
-    data: {},
+    data: '',
     styles: {
       type: String,
       // zenburn vs2015 agate
@@ -267,7 +267,7 @@ export default {
     },
     show: {
       type: Array,
-      default: () => ['title', 'lang', 'num']
+      default: () => ['title', 'lang', 'num', 'nodata']
     },
     tool: {
       type: Array,
@@ -306,7 +306,7 @@ export default {
     },
     nodataStr: function () {
       let _t = this
-      return _t.nodata || _t.L[_t.locale]['nodata']
+      return _t.show.includes('nodata') ? (_t.nodata || _t.L[_t.locale]['nodata']) : ''
     }
   },
   watch: {
@@ -330,6 +330,8 @@ export default {
             _t.renderLine()
           })
         }, 0)
+      } else {
+        _t.lineCount = 0
       }
     },
     renderLine: function () {
