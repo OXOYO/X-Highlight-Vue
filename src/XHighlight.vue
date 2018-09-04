@@ -25,6 +25,12 @@
         }
       }
     }
+
+    &.full-screen {
+      height: 100vh;
+      width: 100vw;
+    }
+
     .block-header {
       display: inline-block;
       width: 100%;
@@ -59,7 +65,7 @@
         line-height: 1;
         /*background-color: #3C3F41;*/
         background-color: #2B2B2B;
-        padding: 0 10px;
+        padding: 5px 10px;
         .tool-btn {
           display: inline-block;
           line-height: normal;
@@ -79,7 +85,7 @@
       display: inline-block;
       width: 100%;
       line-height: 1;
-      max-height: 19em;
+      height: calc(~"100% - 32px");
       overflow: auto;
 
       .line-block {
@@ -90,6 +96,7 @@
           display: inline-block;
           color: #5E6164;
           text-align: right;
+          font-size: 12px;
           width: 100%;
           height: 22px;
           line-height: 22px;
@@ -173,13 +180,16 @@
 </style>
 
 <template>
-  <div class="high-light-block" :id="styles">
+  <div :class="{ 'high-light-block': true, 'full-screen': isFullScreen }" :id="styles" ref="HighLight">
     <div class="block-header">
       <!-- 标题 -->
       <div class="header-title" v-if="show.includes('title')">{{ title }}</div>
       <div class="header-lang" v-if="show.includes('lang')">{{ lang }}</div>
       <!-- 工具栏 -->
       <div class="header-tool" v-if="tool.length">
+        <div v-if="tool.includes('full-screen')" class="tool-btn" @click.stop="handleAction('full-screen')">
+          <Icon class="tool-icon" type="full-screen" :title="L[locale]['full-screen-' + isFullScreen]"></Icon>
+        </div>
         <div v-if="tool.includes('select-all')" class="tool-btn" @click.stop="handleAction('select-all')">
           <Icon class="tool-icon" type="select-all" :title="L[locale]['select-all']"></Icon>
         </div>
@@ -188,7 +198,7 @@
         </div>
       </div>
     </div>
-    <div class="block-body" :style="bodyStyle">
+    <div class="block-body" :style="blockBodyStyle">
       <div class="line-block">
         <template v-if="show.includes('num')">
           <div
@@ -199,7 +209,8 @@
         </template>
       </div>
       <div :class="{ 'code-block': true, 'code-block-calc': show.includes('num') }">
-        <pre><code class="code-content" :class="codeContentClass">{{ data ? data : nodata }}</code></pre>
+        <pre v-if="codeData"><code class="code-content" :class="codeContentClass" v-html="codeData"></code></pre>
+        <pre v-else><code class="code-content" :class="codeContentClass">{{ data ? data : nodataStr }}</code></pre>
       </div>
     </div>
   </div>
@@ -216,19 +227,27 @@ export default {
   },
   data () {
     return {
+      isFullScreen: false,
       // 语言包
       L: {
         zh: {
+          'full-screen-true': '还原',
+          'full-screen-false': '全屏',
           'select-all': '全选',
-          'copy': '复制'
+          'copy': '复制',
+          'nodata': '暂无数据...'
         },
         en: {
+          'full-screen-true': 'reset',
+          'full-screen-false': 'full screen',
           'select-all': 'select all',
-          'copy': 'copy'
+          'copy': 'copy',
+          'nodata': 'no data...'
         }
       },
       // 行数
-      lineCount: 0
+      lineCount: 0,
+      codeData: null
     }
   },
   props: {
@@ -252,14 +271,14 @@ export default {
     },
     tool: {
       type: Array,
-      default: () => ['select-all', 'copy']
+      default: () => ['full-screen', 'select-all', 'copy']
     },
     maxHeight: {
       type: Number
     },
     nodata: {
       type: String,
-      default: '暂无数据！'
+      default: ''
     },
     locale: {
       type: String,
@@ -267,11 +286,11 @@ export default {
     }
   },
   computed: {
-    bodyStyle: function () {
+    blockBodyStyle: function () {
       let _t = this
       let obj = {}
-      if (_t.maxHeight) {
-        obj['max-height'] = _t.maxHeight + 'px'
+      if (!_t.isFullScreen) {
+        obj['max-height'] = _t.maxHeight ? _t.maxHeight + 'px' : '19em'
       }
       return obj
     },
@@ -284,6 +303,10 @@ export default {
         obj['nodata'] = true
       }
       return obj
+    },
+    nodataStr: function () {
+      let _t = this
+      return _t.nodata || _t.L[_t.locale]['nodata']
     }
   },
   watch: {
@@ -298,6 +321,7 @@ export default {
   methods: {
     render: function () {
       let _t = this
+      _t.codeData = null
       if (_t.data) {
         setTimeout(function () {
           _t.$nextTick(function () {
@@ -326,14 +350,16 @@ export default {
         codeArr.push(item)
       }
       let codeStr = codeArr.join('')
-      _t.$el.querySelector('.high-light-block pre code').innerHTML = codeStr
-      let lineCodeArr = _t.$el.querySelectorAll('.high-light-block .line-code')
-      lineCodeArr.forEach(snippet => {
-        hljs.highlightBlock(snippet)
-      })
-      _t.$nextTick(function () {
-        _t.loadStyles()
-      })
+      // _t.$el.querySelector('.high-light-block pre code').innerHTML = codeStr
+      _t.codeData = codeStr
+      setTimeout(function () {
+        _t.$nextTick(function () {
+          let lineCodeArr = _t.$el.querySelectorAll('.high-light-block .line-code')
+          lineCodeArr.forEach(snippet => {
+            hljs.highlightBlock(snippet)
+          })
+        })
+      }, 0)
     },
     handleAction: function (action) {
       let _t = this
@@ -356,7 +382,38 @@ export default {
         // 复制
         document.execCommand('copy')
       }
+      let handleFullScreen = function () {
+        if (!_t.isFullScreen) {
+          // 全屏
+          // let docElm = document.documentElement
+          let docElm = _t.$refs['HighLight']
+          if (docElm.requestFullscreen) {
+            docElm.requestFullscreen()
+          } else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen()
+          } else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen()
+          } else if (docElm.msRequestFullscreen) {
+            docElm.msRequestFullscreen()
+          }
+        } else {
+          // 退出全屏
+          if (document.exitFullscreen) {
+            document.exitFullscreen()
+          } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen()
+          } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen()
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen()
+          }
+        }
+        _t.isFullScreen = !_t.isFullScreen
+      }
       switch (action) {
+        case 'full-screen':
+          handleFullScreen()
+          break
         case 'select-all':
           handleSelectAll()
           break
@@ -364,61 +421,26 @@ export default {
           handleCopy()
           break
       }
-    },
-    loadStyles: function () {
-      let _t = this
-      if (_t.styles) {
-        try {
-          // 加载样式
-          require('highlight.js/styles/' + _t.styles + '.css')
-          console.log('Load', 'highlight.js/styles/' + _t.styles + '.css', 'succeed.')
-        } catch (e) {
-          console.warn('Load', 'highlight.js/styles/' + _t.styles + '.css', 'failed.')
-        }
-      }
-    },
-    loadLang: function () {
-      let _t = this
-      if (_t.lang) {
-        let fileName = _t.lang.toLowerCase()
-        try {
-          // 加载语言包
-          let lang = require('highlight.js/lib/languages/' + fileName + '.js')
-          console.log('lang', lang)
-          hljs.registerLanguage(_t.lang, lang)
-          console.log('Load', 'highlight.js/lib/languages/' + fileName + '.js', 'succeed.')
-        } catch (e) {
-          console.warn('Load', 'highlight.js/lib/languages/' + fileName + '.js', 'failed.')
-        }
-      }
     }
   },
-  /*
-  beforeMount: function () {
+  created: function () {
     let _t = this
-    if (_t.styles) {
-      try {
-        // 加载样式
-        require('highlight.js/styles/' + _t.styles + '.css')
-        console.log('Load', 'highlight.js/styles/' + _t.styles + '.css', 'succeed.')
-      } catch (e) {
-        console.warn('Load', 'highlight.js/styles/' + _t.styles + '.css', 'failed.')
+    // 绑定mouseup事件
+    document.onkeyup = function (event) {
+      if (event.stopPropagation) {
+        event.stopPropagation()
+      }
+      if (event.preventDefault) {
+        event.preventDefault()
+      }
+      if (event.keyCode === 27 || event.code === 'Escape') {
+        _t.isFullScreen = false
       }
     }
   },
-  */
   mounted: function () {
     let _t = this
-    // _t.loadLang()
     _t.render()
   }
-  /*
-  ,
-  updated: function () {
-    let _t = this
-    // _t.loadStyles()
-    _t.render()
-  }
-  */
 }
 </script>
