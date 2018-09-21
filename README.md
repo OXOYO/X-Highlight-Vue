@@ -32,8 +32,8 @@ npm run dev
 
   main.js
   ```bash
-  import XHighlight from 'XHighlight'
-  import 'XHighlight/dist/css/XHighlight.css'
+  import XHighlight from 'x-highlight'
+  import 'x-highlight/dist/css/XHighlight.css'
   // highlight theme
   import 'highlight.js/styles/zenburn.css'
 
