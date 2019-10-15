@@ -1,0 +1,30 @@
+{
+  "id": "821917",
+  "name": "X-Highlight-Vue",
+  "font_family": "iconfont",
+  "css_prefix_text": "xhv-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "407195",
+      "name": "复制",
+      "font_class": "copy",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "4236628",
+      "name": "全屏幕",
+      "font_class": "full-screen",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "10148173",
+      "name": "全选",
+      "font_class": "select-all",
+      "unicode": "e71f",
+      "unicode_decimal": 59167
+    }
+  ]
+}

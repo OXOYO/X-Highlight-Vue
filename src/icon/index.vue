@@ -26,7 +26,7 @@ export default {
     return {
       className: {
         main: 'iconfont',
-        prefix: 'icon-'
+        prefix: 'xhv-icon-'
       }
     }
   },
