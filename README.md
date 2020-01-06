@@ -2,9 +2,9 @@
 
 [![Version](https://img.shields.io/npm/v/x-highlight.svg)](https://www.npmjs.com/package/x-highlight)
 [![License](https://img.shields.io/npm/l/x-highlight.svg)](https://www.npmjs.com/package/x-highlight)
-[![NPM downloads](http://img.shields.io/npm/dm/x-highlight.svg?style=flat-square)](https://npmjs.org/package/x-highlight)
+[![NPM downloads](http://img.shields.io/npm/dm/x-highlight.svg)](https://npmjs.org/package/x-highlight)
 [![Downloads](https://img.shields.io/npm/dt/x-highlight.svg)](https://www.npmjs.com/package/x-highlight)
-![JS gzip size](http://img.badgesize.io/https://unpkg.com/x-highlight/dist/XHighlight.js?compression=gzip&label=gzip%20size:%20JS&style=flat-square)
+![JS gzip size](http://img.badgesize.io/https://unpkg.com/x-highlight/dist/XHighlight.js?compression=gzip&label=gzip%20size:%20JS)
 
 > A Vue.js plugin use for Syntax highlighting.
 
